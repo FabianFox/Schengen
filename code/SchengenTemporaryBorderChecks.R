@@ -1,6 +1,6 @@
 # Data on temporarily reinstated border controls in the Schengen Area
 
-# Downloaded on 2020/05/13
+# Downloaded on 2020/06/10
 # Source: https://ec.europa.eu/home-affairs/what-we-do/policies/borders-and-visas/schengen/reintroduction-border-control_en
 # pdf: https://ec.europa.eu/home-affairs/sites/homeaffairs/files/what-we-do/policies/borders-and-visas/schengen/reintroduction-border-control/docs/ms_notifications_-_reintroduction_of_border_control_en.pdf
 
@@ -35,7 +35,7 @@ theme.basic <- theme_minimal() +
 loc <- "./data/ms_notifications_-_reintroduction_of_border_control_en.xlsx"
 
 # Load the data
-bcontrol.df <- import(loc)[3:193,] %>%
+bcontrol.df <- import(loc)[3:208,] %>%
   setNames(.[1,]) %>%
   .[-1,] %>%
   clean_names() %>%
@@ -236,7 +236,7 @@ eu_neighbours <- contdird %>%
 bcontrol_dyad.df <- bcontrol.df %>%
   left_join(y = eu_neighbours, by = c("iso3_state" = "state1"))
 
-# Make state and neighbours data longer 
+# Make state and neighbor data longer 
 bcontrol_dyad.df <- bcontrol_dyad.df %>%
   separate(neighbours_iso3, into = paste0("n", 1:9), extra = "drop") %>%
   pivot_longer(cols = n1:n9, values_to = "neighbour") %>%
@@ -245,7 +245,12 @@ bcontrol_dyad.df <- bcontrol_dyad.df %>%
   mutate(neighbour_eu = countrycode(neighbour, "iso3c", "eurostat"),
          neighbour_name = countrycode(neighbour, "iso3c", "country.name.en"))
 
+# Export for manual editing
+### ------------------------------------------------------------------------###
+# export(bcontrol_dyad.df, "./data/TemporaryBorderClosures_2020-06-10.xlsx")
+
 # Identify temporary closure against country and add type
+### ------------------------------------------------------------------------###
 bcontrol_dyad.df <- bcontrol_dyad.df %>%
   mutate(neighbour_mention = str_detect(
     reasons_scope, paste(neighbour_name, neighbour_eu, 
@@ -254,9 +259,7 @@ bcontrol_dyad.df <- bcontrol_dyad.df %>%
                          sep = "|"))) %>%
   filter(neighbour_mention == TRUE)
 
-# Add: "except.+[Liechtenstein|France]")
-
-# Check remaining incidents that cannot be aligend with any specific borders
+# Check remaining incidents that cannot be aligned with any specific borders
 # Note:
 # - some cases mention only regions or certain BCPs (not entire countries)
 # - some cases do not specify a border
