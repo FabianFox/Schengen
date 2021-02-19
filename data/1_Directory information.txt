@@ -1,0 +1,9 @@
+Original .pdf files provided by the Transparency Service or downloaded from the European Commission's website
+Border controls [year]-[year].pdf
+
+Original files after exporting to .xlsx or .csv
+Border controls [year]-[year].[.xlsx|.csv]
+
+Files that have been prepared in R and manually edited to include land borders
+TemporaryBorderClosures [year]-[year].xlsx
+
