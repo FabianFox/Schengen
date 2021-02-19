@@ -1,0 +1,12 @@
+/editing
+/figures
+/text
+/data/archive
+/data/checks
+/data/letters
+/code/
+
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
