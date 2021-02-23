@@ -59,8 +59,7 @@ rm(list = setdiff(ls(), c("bcontrol.df", "theme.basic")))
 # (A) Save original date column
 bcontrol.df <- bcontrol.df %>%
   mutate(duration = paste(begin, end, sep = " - "),
-         duration = if_else(duration == "NA - NA", NA_character_, duration),
-         )
+         duration = if_else(duration == "NA - NA", NA_character_, duration))
 
 # (B) Adjust column 'begin' to start at the beginning of the new year
 bcontrol_myear.df <- bcontrol.df %>%
