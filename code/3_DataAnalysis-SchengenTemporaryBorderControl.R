@@ -12,7 +12,7 @@
 if (!require("xfun")) install.packages("xfun")
 pkg_attach2("tidyverse", "qdap", "rio", "countrycode", "janitor", "lubridate", "rvest",
             "patchwork", "tidytext", "eurostat", "sf", "ggraph", "tidygraph", "igraph",
-            "ggwaffle")
+            "ggwaffle", "gt")
 
 # Additional settings (i.e. for figures)
 theme.basic <- theme_minimal() +
@@ -361,6 +361,7 @@ graph.df %>%
 
 # Network density
 ### ------------------------------------------------------------------------ ###
+# Figure
 density.plot <- graph.df %>%
   ggplot() +
   geom_bar(aes(x = year, y = density), stat = "identity", fill = "#000000") +
@@ -373,6 +374,19 @@ density.plot <- graph.df %>%
         axis.text.y = element_text(size = 16),
         axis.text.x = element_text(size = 16),
         plot.caption = element_text(size = 16))
+
+# Table (Appendix A2)
+density.tbl <- graph.df %>%
+  select(year, nodes, n_borders, n_edges, density) %>%
+  mutate(nodes = map(nodes, ~.x %>%
+                       n_distinct(.$name))) %>%
+  gt() %>%
+  fmt_percent(
+    columns = "density",
+    decimals = 1,
+    scale_values = FALSE
+  ) %>%
+  cols_align(align = "right")
 
 # Reason behind TBC
 ### ------------------------------------------------------------------------ ###
@@ -473,6 +487,35 @@ ms_new_borders.df <- graph.df %>%
   summarize(name = paste(name, collapse = ", ")) %>%
   select(year, name, n_borders, n_members)
 
+# Appendix 3: Reasons by member states across time (table A3)
+### ------------------------------------------------------------------------ ###
+reason_n.tbl <- bcontrol.df %>%
+  group_by(iso3_state, year = year(floor_date(ymd(begin), "year"))) %>%
+  count(full_collapse) %>%
+  ungroup() %>%
+  arrange(iso3_state, year, desc(n)) %>%
+  mutate(reason_n = paste0(full_collapse, " (N=", n, ")")) %>%
+  group_by(iso3_state, year) %>%
+  summarise(reason_n = paste0(reason_n, collapse = ", ")) %>%
+  ungroup() %>%
+  complete(iso3_state, year = 1999:2020) %>% 
+  pivot_wider(id_cols = year, 
+              names_from = iso3_state, 
+              values_from = reason_n)
+
+# Split into two tables
+# Part 1
+table_a3_1.tbl <- reason_n.tbl %>%
+  select(1, 2:12) %>%
+  gt() %>%
+  fmt_missing(columns = everything(), rows = everything(), missing_text = "")
+
+# Part 2
+table_a3_2.tbl <- reason_n.tbl %>%
+  select(1, 13:23) %>%
+  gt() %>%
+  fmt_missing(columns = everything(), rows = everything(), missing_text = "")
+
 # Robustness check: find overlapping intervals in the dataset
 ### ------------------------------------------------------------------------ ###
 # adapted from: https://stackoverflow.com/questions/53213418/r-collapse-and-merge-overlapping-time-intervals
@@ -540,3 +583,14 @@ ggsave(
 
 # Table A1 - Changes in the composition of the Schengen Area, 1999-October 2020
 export(ms_new_borders.df, "./figures/Table A1 - Changes in composition of Schengen Area.txt")
+
+# Table A2 - Density 
+gtsave(density.tbl, "./figures/Table A2 - Network Density.rtf")
+
+# Table A3 - Reasons by MS throughout time
+# Part 1
+gtsave(table_a3_1.tbl, "./figures/Table A3 P1 - Reasons_MS_Year.rtf")
+# Part 2
+gtsave(table_a3_2.tbl, "./figures/Table A3 P2 - Reasons_MS_Year.rtf")
+
+
