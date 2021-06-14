@@ -97,6 +97,31 @@ num_checks.df <- list(num_checks.df,
 checks_panel_a.fig <- num_checks.df %>%
   ggplot() +
   geom_bar(aes(x = year, y = nchecks), stat = "identity", fill = "#000000") +
+  annotate("text", x = as.Date("2008-01-01") - months(6), y = 220,
+           hjust = 0, size = 5,
+           label = "Initial border controls in\nrelation to the migration\nand refugee crisis") +
+  annotate("segment", x = as.Date("2013-01-01")- months(3), 
+           xend =  as.Date("2015-01-01") - months(1), 
+           y = 205, yend = 120) +
+  annotate("text", x = as.Date("2014-01-01") - months(6), y = 320,
+           hjust = 0, size = 5,
+           label = "Initial border controls\nin relation to COVID-19") +
+  annotate("segment", x = as.Date("2019-01-01") - months(5), 
+           xend =  as.Date("2020-01-01"), 
+           y = 320, yend = 300) +
+  annotate("text", x = as.Date("2015-01-01") - months(12), y = 215,
+           hjust = 0, size = 5,
+           label = "Terror attacks in France,\nBelgium and Germany") +
+  annotate("segment", x = as.Date("2017-01-01") - months(4), 
+           xend =  as.Date("2015-01-01") + months(1), 
+           y = 180, yend = 120) +
+  annotate("segment", x = as.Date("2017-01-01") - months(4), 
+           xend =  as.Date("2016-01-01"), 
+           y = 180, yend = 80) +
+  annotate("segment", x = as.Date("2017-01-01") - months(4), 
+           xend =  as.Date("2017-01-01"), 
+           y = 180, yend = 60) + 
+  scale_y_continuous(limits = c(0, 350)) +
   scale_x_date(
     breaks = seq(from = date("2000-01-01"), to = date("2020-12-31"), by = "5 year"),
     labels = paste(seq(2000, 2020, 5)),
