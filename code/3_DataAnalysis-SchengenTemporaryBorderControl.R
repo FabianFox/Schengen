@@ -10,7 +10,7 @@
 # Load/install packages
 ### ------------------------------------------------------------------------ ###
 if (!require("xfun")) install.packages("xfun")
-pkg_attach2("tidyverse", "qdap", "rio", "countrycode", "janitor", "lubridate", "rvest",
+pkg_attach2("tidyverse", "rio", "countrycode", "janitor", "lubridate", "rvest",
             "patchwork", "tidytext", "eurostat", "sf", "ggraph", "tidygraph", "igraph",
             "ggwaffle", "gt")
 
@@ -582,28 +582,29 @@ bcontrol_segment.df <- bcontrol.df %>%
 
 # Figure 2 - Temporary border controls by year/country
 ggsave(
-  plot = checks_year_length.fig, "./figures/Fig 2 - Number and length of TBC by year.tiff", width = 11, height = 8, unit = "in",
-  dpi = 300
+  plot = checks_year_length.fig, "./figures/Fig 2 - Number and length of TBC by year.eps", width = 11, height = 8, unit = "in",
+  dpi = 1200
 )
 
 # Figure 3 - Density plot
 ggsave(
-  plot = density.plot, "./figures/Fig 3 - Network density.tiff", width = 10, height = 5, unit = "in",
-  dpi = 300
+  plot = density.plot, "./figures/Fig 3 - Network density.eps", width = 10, height = 5, unit = "in",
+  dpi = 1200
 )
 
 # Figure 4 - Network Graphs (2015 / 2020)
 graph.df %>%
   filter(year %in% c(2015, 2020)) %>%
   map2(.x = .$plots, .y = .$year, .f = ~ggsave(
-    plot = .x, filename = paste0("./figures/Fig 3 - Network Graph ", .y, ".tiff"),
+    plot = .x, filename = paste0("./figures/Fig 3 - Network Graph ", .y, ".eps"),
     width = 11, height = 8, unit = "in",
-    dpi = 300))
+    dpi = 1200,
+    device = cairo_ps))
 
 # Figure 5 - MS use of TBC by year
 ggsave(
-  plot = ms_checks_year.fig, "./figures/Fig 5 - MS use of TBC by year.tiff", width = 11, height = 8, unit = "in",
-  dpi = 300
+  plot = ms_checks_year.fig, "./figures/Fig 5 - MS use of TBC by year.eps", width = 11, height = 8, unit = "in",
+  dpi = 1200, device = cairo_ps
 )
 
 # Table A1 - Changes in the composition of the Schengen Area, 1999-October 2020
