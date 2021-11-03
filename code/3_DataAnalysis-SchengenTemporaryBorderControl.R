@@ -40,8 +40,13 @@ bcontrol.df <- import("./data/TemporaryBorderControls 1996-2020.RDS")
 bcontrol.df <- bcontrol.df %>%
   filter(year(begin) < 2021)
 
-# Export dataset
-# export(bcontrol.df, "./text/submission/TemporaryBorderControls_2000-2020.csv")
+# Export dataset for third users
+bcontrol.df %>%
+  select(iso3_state, state = member_state, neighbour_iso3, neighbour_name, begin, 
+         end, check_length, reasons_scope, category, duration) %>%
+  mutate(id = row_number()) %>%
+  select(id, everything()) %>% 
+  export(., "./data/TemporaryBorderControls_1999-2020.csv")
 
 # Analysis
 ### ------------------------------------------------------------------------ ###
@@ -65,7 +70,7 @@ sum(bcontrol.df$nb > 0) # 2006-2020: 711
 # Total: 831
 dim(bcontrol.df)
 
-# Number of checks, mean length, and 
+# Number of checks and mean length
 ### ------------------------------------------------------------------------ ###
 # Number of total temporary border checks by year 
 num_checks.df <- bcontrol.df %>%
@@ -359,6 +364,8 @@ graph.df <- list(edges.df, nodes.df, borders.df) %>%
 graph.df$plots[[22]] <- graph.df$plots[[22]] + theme(legend.position = "none")
 
 # Length of TBCs
+# Note: In 2020, the mean length is 193.98 if durations > 365 are not excluded else 
+# 187.56. This is done in line 311 of the script. 
 graph.df %>%
   filter(year %in% c(2015, 2020)) %>%
   ungroup() %>%
@@ -482,6 +489,11 @@ ms_checks_year.fig <- ggplot(ms_checks.df) +
         plot.caption = element_text(size = 14),
         legend.title = element_text(size = 18), 
         legend.text = element_text(size = 16))
+
+# Total number of years with temporary border controls
+ms_checks.df %>%
+  distinct(iso3_state, total_checks) %>%
+  arrange(desc(total_checks))
 
 # Appendix 1: Changes in the composition of the Schengen Area, 1999-October 2020
 ### ------------------------------------------------------------------------ ###
