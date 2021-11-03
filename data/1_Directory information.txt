@@ -7,3 +7,5 @@ Border controls [year]-[year].[.xlsx|.csv]
 Files that have been prepared in R and manually edited to include land borders
 TemporaryBorderClosures [year]-[year].xlsx
 
+Data for third-users
+TemporaryBorderControls_1999-2020.csv
