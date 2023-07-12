@@ -42,3 +42,11 @@ tbc.df <- tbc.df %>%
 
 # Export
 export(tbc.df, "./data/TemporaryBorderControls_Hearing.rds")
+
+# Create figure
+tbc.df %>%
+  ggplot(aes(x = year, y = weight)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~dyad, nrow = 3) +
+  theme.basic
+
