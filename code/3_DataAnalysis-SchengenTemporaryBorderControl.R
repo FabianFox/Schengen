@@ -218,7 +218,7 @@ borders.df <- eu_neighbours %>%
 # https://github.com/thomasp85/ggraph/issues/24
 # shp-file from naturalearth filtered for Schengen Member States
 schengen.shp <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") %>%
-  filter(name_en %in% schengen.df$name)
+  filter(name_long %in% schengen.df$name)
 
 # Get centroids
 # Country names and centroids
@@ -226,7 +226,7 @@ ctr.sf <- st_centroid(schengen.shp)
 
 # Get countries
 countries <- ctr.sf %>%
-  pull(name_en) %>%
+  pull(name_long) %>%
   countrycode(., origin = "country.name.en", "iso3c")
 
 # Get centroids
